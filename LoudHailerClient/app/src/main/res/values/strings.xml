@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">LoudHailerClient</string>
+
+    <string name="title_activity_alarm">LoudHailer</string>
+    <string name="alarm_button">Affirmative</string>
+    <string name="alarm_content">An incident occurred</string>
+</resources>

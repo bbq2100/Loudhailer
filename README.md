@@ -1,5 +1,5 @@
 ### LoudHailer – Reaching your audience!
-A mnmlst voice recognition app based on [Akka Streams](http://akka.io) , [wit.ai](https://wit.ai/) (aka NLP as service) and [Firebase](firebase.google.com) for messaging. 
+A mnmlst voice recognition app based on [Akka Streams](http://akka.io), [wit.ai](https://wit.ai/) (aka NLP as service) and [Firebase](firebase.google.com) for messaging. 
 
 ![Vision](http://i.imgur.com/CvWgRl0l.png) 
 

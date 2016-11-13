@@ -1,3 +1,5 @@
+package github.qabbasi
+
 package object loudhailer {
 
   def showBanner() = println(

@@ -1,4 +1,4 @@
-package loudhailer
+package github.qabbasi.loudhailer
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
@@ -10,29 +10,32 @@ import akka.stream.scaladsl.Source
 import cats.data.Xor
 import com.typesafe.config.{Config, ConfigFactory}
 import de.heikoseeberger.akkahttpcirce.CirceSupport
-import loudhailer.Model.Hypothesis
-import loudhailer.SoundRecorder.{Data, Sample}
+import Model.Hypothesis
+import SoundRecorder.Sample
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 import scala.util.{Failure, Success}
+import io.circe.syntax._
 
-/*
-TODO: In-memory data (replace file)
- */
+import scala.language.postfixOps
 
 object LoudHailer extends App with CirceSupport {
   val config: Config = ConfigFactory.load()
   val witToken: String = config.getString("wit.token")
   val witUrl: String = config.getString("wit.url")
+  val fireBaseToken: String = config.getString("firebase.token")
+  val fireBaseUrl: String = config.getString("firebase.url")
 
   implicit val system = ActorSystem("LoudhailerSystem")
   implicit val materializer = ActorMaterializer()
 
   val blackList = List("help")
 
-  def request: Data => Future[HttpResponse] = data =>
+  def sample: Unit => Sample = _ => SoundRecorder.sample
+
+  def request: Array[Byte] => Future[HttpResponse] = data =>
     Http().singleRequest(HttpRequest(
       method = HttpMethods.POST,
       uri = witUrl,
@@ -48,28 +51,35 @@ object LoudHailer extends App with CirceSupport {
       } yield hypothesis
   }
 
-  def act: (Future[Hypothesis]) => Unit = h => {
-    h.onComplete {
-      case Success(a) =>
-        if (blackList.contains(a.what)) println("help")
-        else println("all good")
+  def act: (Future[Hypothesis]) => Unit = f => {
+    f.onComplete {
+      case Success(h) => if (blackList.contains(h.what)) broadcastEvent()
       case Failure(e) => e.printStackTrace()
     }
   }
 
+  def broadcastEvent() = {
+    val body = Map(
+      "to" -> "/topics/alert".asJson,
+      "data" -> Map(
+        "message" -> "The alarm was triggered.".asJson
+      ).asJson
+    ).asJson
+
+    Http().singleRequest(
+      HttpRequest(
+        method = HttpMethods.POST,
+        uri = fireBaseUrl,
+        headers = List(headers.RawHeader("Authorization", s"key=$fireBaseToken")),
+        entity = HttpEntity(contentType = `application/json`, body.noSpaces)))
+  }
+
   showBanner()
 
-  val sourceTick = Source.tick(0 second, 5 seconds, ())
-
-  def sample: Unit => Sample = _ => SoundRecorder.sample
-
-  //  format:off
-
-  sourceTick.map(sample)
-            .map(analyse)
-            .runForeach(act)
-
-  //  format:on
+  Source.tick(0 second, 5 seconds, ())
+        .map(sample)
+        .map(analyse)
+        .runForeach(act)
 
   println("Press <enter> to exit...")
 

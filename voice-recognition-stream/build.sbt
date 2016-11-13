@@ -21,6 +21,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" % "akka-testkit_2.11" % "2.4.2-RC1"
 )
 
+//Needed due to specialized sbt classloader magic: the original rt.jar will be skinned, that's why the javax.sound api is missing.
 //http://stackoverflow.com/questions/18676712/java-sound-devices-found-when-run-in-intellij-but-not-in-sbt
 fork in run := true
 connectInput in run := true

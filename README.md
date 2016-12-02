@@ -11,4 +11,4 @@ For more information checkout my [blog posts](http://qabbasi.github.io/articles/
 
 ### How to run the client app?
 1. Create a new client project at [Firebase](http://firebase.google.com) (by now I assume you already have an account)
-2. Just follow the instructions there and finally copy the `google-services.json` to [the root of the client directory.](https://github.com/qabbasi/Loudhailer/tree/master/LoudHailerClient) 
+2. Just follow the instructions there and finally copy the `google-services.json` into [the root of the client directory.](https://github.com/qabbasi/Loudhailer/tree/master/LoudHailerClient) 

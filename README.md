@@ -3,7 +3,7 @@ A mnmlst voice recognition app based on [Akka Streams](http://akka.io), [wit.ai]
 
 ![Vision](http://i.imgur.com/CvWgRl0l.png) 
 
-For more information checkout my [blog posts](http://qabbasi.github.io/articles/2016-09/loudhailer-vision). 
+For more information checkout my [blog posts](http://qaismyname.github.io/articles/2016-09/loudhailer-vision). 
 
 ### How to run the stream?
 1. Create an account @ [wit.ai](https://wit.ai/) and copy the access token to [wit.token](https://github.com/qabbasi/Loudhailer/blob/master/voice-recognition-stream/src/main/resources/application.conf) 
